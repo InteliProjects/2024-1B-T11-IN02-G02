@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed de Publicações - Borbulha</title>
+    <link rel="stylesheet" href="styles\index.css">
+    <link rel="stylesheet" href="styles/feed.css">
+    <style>
+        body {
+            background-image: url(images/frontend/mainbackground.svg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" /> 
+    </header>
+
+    <div class="feed" id="feed"></div>
+
+    <footer>
+        <a href="/feed"><img src="images\frontend\icons\feed.svg"/></a>
+        <a href="/escolha-sua-publicacao"><img src="images\frontend\icons\+.svg" /></a>
+        <a href="/community"><img src="images\frontend\icons\comunidade.svg" /></a>            
+        <a href="/ver-perfil/sessionStorage.getItem("userId")"><img src="images\frontend\icons\perfil.svg" /></a>
+      </footer>
+</body>
+
+<script>
+    const feed = document.getElementById("feed");
+fetch("/feed-and-community", {
+    method: "GET",
+    headers: {
+    "Content-Type": "application/json",
+    },
+})
+    .then((res) => {
+    return res.json();
+    })
+    .then((data) => {
+    for (const register of data) {
+        console.log(register);
+        const postContent = register.post_content;
+        const likes = register.likes;
+        const projectTitle = register.project_title;
+        const idUser = register.id_user.id;
+        const name = register.id_user.name;
+        const typePost = register.id_type_post.type_post;
+        const idTypePost = register.id_type_post.id;
+        const idPost = register.id;
+
+        if (data.indexOf(register) === 0) {
+        feed.innerHTML = `
+
+        <div class="box-post">
+
+        <div class="post-header">
+            <a href="/URL-PERFIL-DO-USUARIO" >
+                <img src="https://placehold.co/42" >
+            </a>
+            <p>${name}</p>
+        </div>
+
+        <div class="post-content">
+            <p>${postContent}</p>
+            <img src="https://placehold.co/336x278" >
+        </div>
+
+        <div class="post-footer">
+            <div class="actions">
+
+                <div class="like">
+                    <button id="like-btn-${idPost}">
+                        <img src="images/frontend/icons/borbulhar.svg" id="like-container">
+                    </button>
+                    <p>Borbulhar</p>
+                </div>  
+
+                <div class="share">
+                    <button>
+                        <img src="images\frontend\icons\compartilhar.svg">
+                    </button>
+                    <p>Compartilhar</p>
+                </div>
+
+                <div class="liked">
+                    <p>${likes} Bolhas</p>
+                    <img src="images\frontend\icons\bolhaLaranja.svg">
+                </div>
+
+                </div>
+            </div>
+        </div>
+        `;
+        } else {
+        feed.innerHTML += `
+        <div class="box-post">
+
+<div class="post-header">
+    <a href="/URL-PERFIL-DO-USUARIO" >
+        <img src="https://placehold.co/42" >
+    </a>
+    <p>${name}</p>
+</div>
+
+<div class="post-content">
+    <p>${postContent}</p>
+    <img src="https://placehold.co/336x278" >
+</div>
+
+<div class="post-footer">
+    <div class="actions">
+
+        <div class="like">
+            <button id="like-btn-${idPost}">
+                <img src="images/frontend/icons/borbulhar.svg" id="like-container">
+            </button>
+            <p>Borbulhar</p>
+        </div>  
+
+        <div class="share">
+            <button>
+                <img src="images\frontend\icons\compartilhar.svg"/>
+            </button>
+            <p>Compartilhar</p>
+        </div>
+
+        <div class="liked">
+            <p>${likes} Bolhas</p>
+            <img src="images\frontend\icons\bolhaLaranja.svg">
+        </div>
+
+        </div>
+    </div>
+</div>
+        `;
+        }
+        feed.addEventListener("click", () => {
+        // fetch("/feed-and-community", {
+        //         method: "POST",
+        //         headers: {
+        //           "Content-Type": "application/json"},
+        //         body: JSON.stringify({
+        //             postId: idPost,
+        //             userId: idUser,
+        //             liked: true
+        //         })
+        // }).then((res) => {
+        //     console.log(res.status)
+        //     return res.status
+        // })
+        if (event.target && event.target.id.startsWith("like-btn-")) {
+            const idClickedPost = event.target.id.split("-")[2];
+            console.log(`Like button clicked for post id: ${idPost}`);
+            // Here you can add the fetch request to handle the like functionality
+            console.log("aqui");
+        }
+        console.log("aqui");
+        });
+    }
+    })
+
+    .catch((err) => {
+    console.log(err);
+    });
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const likeBtn = document.getElementById('like-btn');
+    const likeImg = document.getElementById('like-container');
+    const likedText = document.querySelector('.liked p');
+    let liked = false;
+
+    likeBtn.addEventListener('click', function() {
+        if (liked) {
+            likeImg.src = 'images/frontend/icons/borbulhar.svg';
+            likedText.textContent = (parseInt(likedText.textContent) - 1) + ' Bolha';
+        } else {
+            likeImg.src = 'images/frontend/icons/bolhaLaranja.svg';
+            likedText.textContent = (parseInt(likedText.textContent) + 1) + ' Bolha';
+        }
+        liked = !liked;
+    });
+});
+</script>
+    
+</html>

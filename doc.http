@@ -1,0 +1,16 @@
+### Criar um novo type_user
+
+POST http://localhost:1337/batata
+Content-Type: application/json
+
+{
+  "type_users": "Mari"
+}
+
+###
+GET http://localhost:1337/list-type-users
+Content-Type: application/json
+
+###
+GET http://localhost:1337/list-type-users/1
+Content-Type: application/json

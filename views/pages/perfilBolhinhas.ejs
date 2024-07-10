@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borbulha</title>
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="styles/perfilBolhinha.css" />
+    <link rel="stylesheet" href="styles/index.css" />
+    <style>
+        body {
+            background-image: url(images/frontend/mainbackground.svg);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cabeçalho com o logo -->
+    <header>
+        <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" /> 
+    </header>
+
+    <!-- Caixa de perfil -->
+    <div class="box-perfil">
+        <!-- Ícone de edição -->
+        <div class="iconEdit"> 
+            <a href="/editar-perfil">
+                <img src="images/frontend/icons/iconEdit.svg" />
+            </a>
+        </div>
+        
+        <!-- Seção da foto de perfil e nome -->
+        <div>
+            <!-- Label para o input de upload de imagem -->
+            <label class="picture" for="picture__input" tabIndex="0">
+                <span class="picture__image">+</span>
+            </label>
+            <div class="Nome">Nome</div>
+        </div>
+
+        <!-- Descrição do usuário -->
+        <div>
+            <p>
+                Eu sou a Carla, uma mulher que encontra propósito no trabalho voluntário que realizo em minha ONG. 
+                Cada momento dedicado a servir à comunidade é impulsionado pelo meu profundo amor pelo próximo,
+                uma paixão que se origina da minha cultura e religião.
+                Encontro inspiração e apoio na comunidade que me cerca, 
+                o que me motiva a continuar fazendo a diferença.
+            </p>
+        </div>
+
+        <!-- Seções de bolhinhas e perfil -->
+        <div class="section-bolhinhas" id="bolhinhas">Bolhinhas</div>
+        <div class="section-perfil" id="perfil">Ver perfil</div>
+
+        <!-- Imagens do perfil -->
+        <div class="image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+        </div>
+
+        <div class="image2">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+        </div>
+
+        <div class="image3">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+            <img src="https://placehold.co/81x93" alt="Placeholder Image">
+        </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script src="scripts.js"></script>
+    <script>
+        // Adiciona evento de clique para redirecionar para a página de bolhas
+        document.getElementById('bolhinhas').addEventListener('click', function() {
+            window.location.href = '/perfil-bolhas';
+        });
+
+        // Adiciona evento de clique para redirecionar para a página de perfil
+        document.getElementById('perfil').addEventListener('click', function() {
+            window.location.href = '/ver-perfil/1';
+        });
+    </script>
+
+    <!-- Rodapé com links de navegação -->
+    <footer>
+        <a href="/feed"><img src="images/frontend/icons/feed.svg" alt="Feed"/></a>
+        <a href="/escolha-sua-publicacao"><img src="images/frontend/icons/+.svg" alt="Publicação"/></a>
+        <a href="/community"><img src="images/frontend/icons/comunidade.svg" alt="Comunidade"/></a>            
+        <a href="/ver-perfil"><img src="images/frontend/icons/perfil.svg" alt="Perfil" id="see-profile"/></a>
+    </footer>
+
+    <script>
+        // Define o href do link de perfil com o userId armazenado na sessionStorage
+        document.getElementById("see-profile").href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+    </script>
+</body>
+
+</html>

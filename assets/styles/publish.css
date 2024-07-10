@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  width: fit-content;
+  height: fit-content;
+}
+body {
+  background-color: #eeeeee;
+}
+main {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2.68rem 1.5rem 10rem 1.5rem;
+  gap: 1.688rem;
+  overflow: auto;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 1.45rem;
+  gap: 1.5rem;
+  background-color: #ffffff;
+}
+.card-description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.card-title {
+  font-family: "Noto Sans";
+  font-weight: bold;
+  font-size: 1.125rem;
+  color: black;
+}
+.card-subtitle {
+  font-family: "Noto Sans";
+  font-size: 1rem;
+  color: #72767c;
+}
+.card-img {
+  max-height: 16.125rem;
+  align-self: center;
+}
+footer {
+  background-color: #eeeeee;
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding-right: 4rem;
+  padding-left: 3.25rem;
+  gap: 2.875rem;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borbulha</title>
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="styles/verPerfil.css">
+    <style>
+        body {
+            background-image: url(images/frontend/mainbackground.svg);
+            background-attachment: fixed;
+            background-size: cover;
+            background-repeat: repeat;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho com o logo -->
+    <header>
+        <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" alt="Logo Borbulha"/> 
+    </header>
+
+    <!-- Caixa de perfil -->
+    <div class="box-perfil">
+        <!-- Seção da foto de perfil e nome -->
+        <div class="foto">
+            <!-- Label para o input de upload de imagem -->
+            <label class="picture" for="picture__input" tabIndex="0">
+                <span class="picture__image">+</span>
+            </label>
+            <!-- Input para o upload de imagem, escondido -->
+            <input type="file" accept="image/*" id="picture__input" style="display: none;" />
+            <div class="Nome">Nome</div>
+        </div>
+
+        <!-- Descrição do usuário -->
+        <div class="description">
+            <p>
+                Eu sou a Carla, uma mulher que encontra propósito no trabalho voluntário que realizo em minha ONG. 
+                Cada momento dedicado a servir à comunidade é impulsionado pelo meu profundo amor pelo próximo,
+                uma paixão que se origina da minha cultura e religião.
+                Encontro inspiração e apoio na comunidade que me cerca, 
+                o que me motiva a continuar fazendo a diferença.
+            </p>
+        </div>
+
+        <!-- Seções de bolhinhas e perfil -->
+        <div class="section-bolhinhas">Bolhinhas</div>
+        <div class="section-perfil">Ver perfil</div>
+
+        <!-- Informações do perfil -->
+        <div class="info-profile">
+            <div class="state">
+                <img src="images/frontend/icons/iconState.svg" alt="Ícone Estado"/>
+                <h4>Estado:</h4>
+                <p>São Paulo</p>
+            </div>
+
+            <div class="city">
+                <img src="images/frontend/icons/iconCity.svg" alt="Ícone Cidade"/>
+                <h4>Cidade:</h4>
+                <p>São José dos Campos</p>
+            </div>
+
+            <div class="genero">
+                <img src="images/frontend/icons/iconGenero.svg" alt="Ícone Gênero"/>
+                <h4>Gênero:</h4>
+                <p>Feminino</p>
+            </div>
+
+            <div class="email">
+                <img src="images/frontend/icons/iconGmail.svg" alt="Ícone Email"/>
+                <h4>Email:</h4>
+                <p>joão.silva@gmail.com</p>
+            </div>
+
+            <div class="age">
+                <img src="images/frontend/icons/iconAge.svg" alt="Ícone Idade"/>
+                <h4>Idade:</h4>
+                <p>20</p>
+            </div>
+
+            <div class="action">
+                <img src="images/frontend/icons/iconAction.svg" alt="Ícone Ações"/>
+                <h4>Ações:</h4>
+                <p>#Doações #Caridade</p>
+            </div>
+
+            <div class="public">
+                <img src="images/frontend/icons/iconPublic.svg" alt="Ícone Público-alvo"/>
+                <h4>Público-alvo:</h4>
+                <p>#Animais #Crianças</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé com links de navegação -->
+    <footer>
+        <a href="/feed"><img src="images/frontend/icons/feed.svg" alt="Feed"/></a>
+        <a href="/escolha-sua-publicacao"><img src="images/frontend/icons/+.svg" alt="Publicação"/></a>
+        <a href="/community"><img src="images/frontend/icons/comunidade.svg" alt="Comunidade"/></a>            
+        <a href="/ver-perfil"><img src="images/frontend/icons/perfil.svg" alt="Perfil" id="see-profile"/></a>
+    </footer>
+
+    <script>
+        // Define o href do link de perfil com o userId armazenado na sessionStorage
+        document.getElementById("see-profile").href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+
+        // Função para exibir a imagem de perfil selecionada
+        const inputFile = document.querySelector("#picture__input");
+        const pictureImage = document.querySelector(".picture__image");
+        const pictureImageTxt = "Adicione uma imagem";
+        pictureImage.innerHTML = pictureImageTxt;
+
+        inputFile.addEventListener("change", function (e) {
+            const inputTarget = e.target;
+            const file = inputTarget.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.addEventListener("load", function (e) {
+                    const readerTarget = e.target;
+                    const img = document.createElement("img");
+                    img.src = readerTarget.result;
+                    img.classList.add("picture__img");
+
+                    pictureImage.innerHTML = "";
+                    pictureImage.appendChild(img);
+                });
+                reader.readAsDataURL(file);
+            } else {
+                pictureImage.innerHTML = pictureImageTxt;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

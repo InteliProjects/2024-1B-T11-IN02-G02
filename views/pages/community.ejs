@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/community.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
+    <style>
+      main {
+        background-image: url("images/frontend/mainbackground.svg");
+        background-attachment: fixed;
+        background-size: cover;
+        background-repeat: repeat;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cabeçalho com o logo da Borbulha -->
+    <header>
+      <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" />
+    </header>
+
+    <!-- Seção de botões ativos -->
+    <div id="activeButtonsSection">
+      <div class="allignButtonTop">
+        <button id="filterButton">
+          <img src="images/frontend/icons/filtrar.svg" />
+        </button>
+      </div>
+      <div id="activeButtons"></div>
+    </div>
+
+    <!-- Conteúdo principal com postagens -->
+    <main id="main"></main>
+
+    <!-- Pop-up dos filtros -->
+    <div id="filterPopup">
+      <div class="header">Filtros</div>
+      <div class="filters">
+        <div class="action-section">
+          <h3>Ação</h3>
+          <button id="action-1">Meio ambiente</button>
+          <button id="action-2">Tecnologia</button>
+          <button id="action-3">Saúde</button>
+          <button id="action-4">Esporte</button>
+          <button id="action-5">Educação</button>
+          <button id="action-6">Assistência social</button>
+          <button id="action-7">Cultura e Arte</button>
+        </div>
+        <div class="target-audience-section">
+          <h3>Público-alvo</h3>
+          <button id="target-public-4">Socialmente vulneráveis</button>
+          <button id="target-public-5">Imigrantes</button>
+          <button id="target-public-6">Animais</button>
+          <button id="target-public-7">Idosos</button>
+          <button id="target-public-3">Crianças</button>
+          <button id="target-public-9">LGBTQ+</button>
+          <button id="target-public-10">PCD</button>
+          <button id="target-public-11">Estudantes</button>
+        </div>
+      </div>
+      <button id="closePopup">Filtrar</button>
+    </div>
+
+    <!-- Overlay do filtro -->
+    <div id="overlay"></div>
+    <script>
+      if (!sessionStorage.getItem("userId")) {
+        window.location.href = `${window.location.origin}/login`;
+      }
+    </script>
+    <!-- Script JavaScript -->
+    <script>
+      // Função para abrir e fechar o pop-up de filtro
+      document.addEventListener("DOMContentLoaded", function () {
+        const filterButton = document.getElementById("filterButton");
+        const overlay = document.getElementById("overlay");
+        const filterPopup = document.getElementById("filterPopup");
+        const closePopup = document.getElementById("closePopup");
+        const filterButtons = document.querySelectorAll(
+          "#filterPopup button:not(#closePopup)"
+        );
+        const activeButtonsContainer = document.getElementById("activeButtons");
+
+        filterButton.addEventListener("click", function () {
+          overlay.style.display = "block";
+          filterPopup.style.display = "block";
+          document.body.classList.add("no-scroll");
+          setTimeout(() => {
+            filterPopup.style.bottom = "0";
+          }, 10);
+        });
+
+        overlay.addEventListener("click", function () {
+          closeFilter();
+        });
+
+        closePopup.addEventListener("click", function () {
+          closeFilter();
+        });
+
+        function closeFilter() {
+          filterPopup.style.bottom = "-100%";
+          setTimeout(() => {
+            overlay.style.display = "none";
+            filterPopup.style.display = "none";
+            document.body.classList.remove("no-scroll");
+          }, 300);
+        }
+
+        function updateActiveButtons() {
+          activeButtonsContainer.innerHTML = "";
+          filterButtons.forEach((button) => {
+            if (button.classList.contains("active")) {
+              const activeButton = document.createElement("button");
+              activeButton.textContent = button.textContent;
+              activeButton.addEventListener("click", function () {
+                overlay.style.display = "block";
+                filterPopup.style.display = "block";
+                document.body.classList.add("no-scroll");
+                setTimeout(() => {
+                  filterPopup.style.bottom = "0";
+                }, 10);
+              });
+              activeButtonsContainer.appendChild(activeButton);
+            }
+          });
+        }
+
+        filterButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            button.classList.toggle("active");
+            updateActiveButtons();
+          });
+        });
+
+        // Funcionalidade de arrastar para fechar o filtro
+        let startY;
+        let currentY;
+        let isDragging = false;
+
+        filterPopup.addEventListener("touchstart", function (e) {
+          startY = e.touches[0].clientY;
+          isDragging = true;
+        });
+
+        filterPopup.addEventListener("touchmove", function (e) {
+          if (!isDragging) return;
+          currentY = e.touches[0].clientY;
+          const diffY = currentY - startY;
+          if (diffY > 0) {
+            filterPopup.style.bottom = `-${diffY}px`;
+          }
+        });
+
+        filterPopup.addEventListener("touchend", function () {
+          if (currentY - startY > 100) {
+            closeFilter();
+          } else {
+            filterPopup.style.bottom = "0";
+          }
+          isDragging = false;
+        });
+      });
+    </script>
+    <script>
+      const button = document.getElementById("closePopup");
+      const activeFilters = document.getElementsByClassName("active");
+      console.log(activeFilters);
+      button.addEventListener("click", () => {
+        let targetPublicsIds = [];
+        let actionsIds = [];
+        for (const filter of activeFilters) {
+          filter.id.slice(0, -1).includes("action")
+            ? actionsIds.push(Number(filter.id.slice(-1)))
+            : targetPublicsIds.push(Number(filter.id.slice(-1)));
+        }
+        (targetPublicsIds = targetPublicsIds.join(",")),
+          (actionsIds = actionsIds.join(",")),
+          // Adição dos cards pelo banco de dados
+          fetch(
+            `/feed-and-community/interests?targetPublics=${targetPublicsIds}&actions=${actionsIds}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              const main = document.getElementById("main");
+              if (!data) {
+                cardHTML = "";
+              }
+              data.forEach((project, i) => {
+                const params = {
+                  title: project.project_title,
+                  volunteers: project.project_volunteers_quantity,
+                  duration: project.project_duration,
+                  name: project.id_user.name,
+                  state: project.id_user.state,
+                  city: project.id_user.city,
+                  imgUrl: project.post_image_url,
+                  id: project.id,
+                  cost: project.project_cost,
+                  description: project.project_description,
+                  profilePicture: project.id_user.profile_picture_url,
+                };
+                getPostInfo(project, i, main, params);
+                setTimeout(() => {
+                  seeMoreBtn = document.getElementById(
+                    `see-more-${project.id}`
+                  );
+                  console.log(seeMoreBtn);
+                  seeMoreBtn.onclick = () => {
+                    const body = document.querySelector("body");
+                    manipulatePopup(body, params);
+                    body.style.overflow = "hidden";
+                    console.log("aqui");
+                    setTimeout(() => {
+                      document.getElementById(
+                        `close-post-${project.id}`
+                      ).onclick = () => {
+                        document.querySelector("dialog").remove();
+                        document.querySelector("body").style.overflow = "auto";
+                      };
+                    }, 2000);
+                  };
+                }, 2000);
+              });
+            })
+            .catch((error) =>
+              console.error("Error fetching feed and community:", error)
+            );
+
+        function manipulatePopup(body, params) {
+          const popupHTML = `
+                <dialog class="popupVermais">
+
+      <div class="popup-header">
+        <div class="image-perfil">
+          <img src=${params.profilePicture} class="image-perfil">
+          </div>
+        <p class="name">${params.name}</p>
+        <div id="close-post-${params.id}">
+        <button class="voltar">X</button>
+        </div>
+      </div>
+
+        <h3 class="title">${params.title}</h3>
+
+      <div class="popup-image">
+          <img src=${params.imgUrl} alt="Placeholder Image">
+      </div>
+
+      <div><h4>Como fazer</h4>
+        <p class="description">${params.description}</p>
+        </div>
+
+      <div class="information">
+        <div class="volunteers"><img src="images/frontend/icons/voluntários.svg"><p>Voluntários: ${params.volunteers}</p></div>
+        <div class="duration"><img src="images/frontend/icons/tempo.svg"><p>Duração: ${params.duration}</p></div>
+        <div class="cost"><img src="images/frontend/icons/custo.svg"><p>Custo: ${params.cost}</p></div>
+      </div>
+
+      </dialog>`;
+
+          body.innerHTML += popupHTML;
+        }
+        async function getPostInfo(project, i, main, params) {
+          try {
+            const cardHTML = `
+              <div class="card">
+                  <div class="card-description">
+                      <div class="card-title" id="card-title">
+                          <p>${params.title}</p>
+                      </div>
+                      <div class="card-author" id="card-author">
+                          <p>${params.name}</p>
+                          </div>
+                  </div>
+                  <img class="card-img" src=${params.imgUrl} />
+                  <div class="card-info">
+                      <div class="card-info-project">
+                          <div class="card-info-project-volunteers">
+                              <img class="card-info-project-volunteers-icon" src="images/frontend/icons/user-icon.svg" />
+                              <div class="card-info-project-volunteers-text" id="card-info-project-volunteers-text">
+                                  <p>${params.volunteers}</p>
+                              </div>
+                          </div>
+                          <div class="card-info-project-duration" id="card-info-project-duration">
+                              <img class="card-info-project-duration-icon" src="images/frontend/icons/date-icon.svg" />
+                              <div class="card-info-project-duration-text">
+                                  <p>${params.duration}</p>
+                                  </div>
+                          </div>
+                      </div>
+                      <div class="card-info-localization" id="card-info-localization">
+                          <p>${params.city}, ${params.state}</p>
+                      </div>
+                  </div>
+                  <div class="card-see-more" id="see-more-${params.id}">
+                      <button class="button-see-more">Ver mais</button>
+                      </div>
+                  </div>`;
+            // Adiciona o card ao conteúdo principal
+            if (i === 0) {
+              main.innerHTML = cardHTML;
+              // let seeMoreBtn = document.getElementById(`see-more-${id}`);
+              // console.log(seeMoreBtn);
+              // seeMoreBtn.onclick = () => {
+              //   main.innerHTML += popupHTML;
+              //   document.querySelector("body").style.overflow = "hidden";
+              //   console.log(document.getElementById(`close-popup-${id}`));
+              // };
+            } else {
+              main.innerHTML += cardHTML;
+            }
+          } catch (error) {
+            console.error("Error fetching post info:", error);
+          }
+        }
+      });
+    </script>
+
+    <!-- Rodapé com ícones de navegação -->
+    <footer>
+      <a href="/feed"><img src="images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+  </body>
+  <script>
+    // Define o href do botão de perfil com o userId armazenado
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+</html>

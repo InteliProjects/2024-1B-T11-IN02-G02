@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borbulha</title>
+    <!-- Links para os arquivos CSS -->
+    <link rel="stylesheet" href="../../styles/index.css" />
+    <link rel="stylesheet" href="../../styles/verPerfil.css" />
+    <style>
+      /* Estilo inline para definir uma imagem de fundo para o corpo */
+      body {
+        background-image: url(images/frontend/mainbackground.svg);
+      }
+      #editar{
+        align-items: center;
+        justify-content: center;
+        align-content:center ;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cabeçalho com o logo da Borbulha -->
+    <header>
+      <img id="borbulha-logo" src="../../images/logos/borbulha-logo.svg" />
+    </header>
+
+    <div class="box-perfil">
+      <!-- Ícone de edição do perfil -->
+      <div class="iconEdit">
+        <a href="/editar-perfil">
+          <img src="../../images/frontend/icons/iconEdit.svg" />
+        </a>
+      </div>
+
+      <!-- Seção de foto e nome do perfil -->
+      <div class="foto">
+        <!-- Botão para upload de imagem -->
+        <button id="upload_widget"></button>
+        <div class="Nome">Nome</div>
+      </div>
+
+      <!-- Seção de descrição do perfil -->
+      <div class="description-edit">
+        <textarea
+          class="text1"
+          placeholder="Adicione a atualização da sua biografia "
+          id="description-edit"
+        ></textarea>
+      </div>
+
+      <!-- Informações do perfil para edição -->
+      <div class="info-profile">
+        <!-- Estado -->
+        <div class="state">
+          <img src="../../images/frontend/icons/iconState.svg" />
+          <h4>Estado:</h4>
+          <textarea placeholder="Atualize seu estado" id="state"></textarea>
+        </div>
+
+        <!-- Cidade -->
+        <div class="city">
+          <img src="../../images/frontend/icons/iconCity.svg" />
+          <h4>Cidade:</h4>
+          <textarea placeholder="Atualize sua cidade" id="city"></textarea>
+        </div>
+
+        <!-- Email -->
+        <div class="email">
+          <img src="../../images/frontend/icons/iconGmail.svg" />
+          <h4>Email:</h4>
+          <textarea placeholder="Atualize seu email" id="email"></textarea>
+        </div>
+
+        <!-- Idade -->
+        <div class="age-edit">
+          <img src="../../images/frontend/icons/iconAge.svg" />
+          <h4>Data de nascimento:</h4>
+          <textarea id="age-edit"></textarea>
+        </div>
+
+        <!-- Ações -->
+        <div class="action">
+          <img src="../../images/frontend/icons/iconAction.svg" />
+          <h4>Ações:</h4>
+          <select name="type_action">
+            <option value=""></option>
+            <option value="Meio ambiente">Meio ambiente</option>
+            <option value="Educação">Educação</option>
+            <option value="Tech">Tech</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Esportes">Esportes</option>
+          </select>
+        </div>
+
+        <!-- Público-alvo -->
+        <div class="public">
+          <img src="../../images/frontend/icons/iconPublic.svg" />
+
+          <h4>Publico-alvo:</h4>
+          <select>
+            <option value=""></option>
+            <option value="Idosos">Idosos</option>
+            <option value="Crianças">Crianças</option>
+            <option value="Animais">Animais</option>
+            <option value="Estrangeiros">Estrangeiros</option>
+          </select>
+        </div>
+
+        <!-- Botão para atualizar as informações do perfil -->
+        <button type="button" class="publish_btn" id="publish">
+          Atualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Rodapé com links de navegação -->
+    <footer>
+      <a href="/feed"><img src="images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+  </body>
+
+  <script
+    src="https://widget.cloudinary.com/v2.0/global/all.js"
+    type="text/javascript"
+  ></script>
+  <script type="text/javascript">
+    setTimeout(() => {
+      const btnCloudinary = document.querySelector(".cloudinary-button");
+      document.getElementById("cloudinary-uw-page-styles").innerHTML = "";
+      btnCloudinary.innerHTML = "";
+    }, "2000");
+    const button = document.getElementById("upload_widget");
+    let widget = cloudinary.applyUploadWidget(
+      button,
+      {
+        cloudName: "dxcd0vozq",
+        uploadPreset: "rnz7powg",
+      },
+      (error, result) => {
+        if (!error && result && result.event === "success") {
+          setTimeout(() => {
+            const href = document.querySelector("a");
+            const ul = document.querySelector("ul");
+            const btnCloudinary = document.querySelector(".cloudinary-button");
+            const picture = document.querySelector(".foto");
+            picture.innerHTML = `
+            <label class="picture">
+              <img src=${result.info.secure_url} />
+              </label>
+              <div class="Nome">Nome</div>
+              `;
+            button.style.display = "none";
+            href.style.display = "none";
+            ul.style.display = "none";
+            btnCloudinary.style.display = "none";
+            fetch(
+              `${window.location.origin}/user/${sessionStorage.getItem("userId")}`,
+              {
+                method: "PUT",
+                body: JSON.stringify({
+                  profile_picture_url: result.info.secure_url,
+                }),
+              }
+            );
+          }, "1000");
+        }
+      }
+    );
+    const publish = document.querySelector(".publish_btn");
+    const emailInput = document.querySelector("#email");
+    const birthdateInput = document.querySelector("#age-edit");
+    const descriptionInput = document.querySelector("#description-edit");
+    const cityInput = document.querySelector("#city");
+    const stateInput = document.querySelector("#state");
+
+    let emailValue;
+    let birthdateValue;
+    let descriptionValue;
+    let cityValue;
+    let stateValue;
+
+    emailInput.addEventListener("input", () => {
+      emailValue = emailInput.value;
+    });
+
+    birthdateInput.addEventListener("input", () => {
+      birthdateValue = birthdateInput.value;
+    });
+
+    descriptionInput.addEventListener("input", () => {
+      descriptionValue = descriptionInput.value;
+    });
+
+    cityInput.addEventListener("input", () => {
+      cityValue = cityInput.value;
+    });
+
+    stateInput.addEventListener("input", () => {
+      stateValue = stateInput.value;
+      console.log(stateValue);
+    });
+    console.log();
+
+    publish.addEventListener("click", () => {
+      fetch(`${window.location.origin}/user/${sessionStorage.getItem("userId")}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          email: emailValue,
+          birthdate: birthdateValue,
+          profile_description: descriptionValue,
+          city: cityValue,
+          state: stateValue,
+        }),
+      })
+        .then((res) => {
+          return res.status;
+        })
+        .then((data) => {
+          if (data === 200) {
+            alert("Ação realizada com sucesso");
+          }
+        });
+    });
+  </script>
+  <script>
+    // Define o href do botão de perfil com o userId armazenado
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+  <script>
+    if (!sessionStorage.getItem("userId")) {
+      console.log(window.location.href);
+      window.location.href = `${window.location.origin}/login`;
+    }
+  </script>
+</html>

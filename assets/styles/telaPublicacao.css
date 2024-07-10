@@ -1,0 +1,74 @@
+body {
+    font-family: 'Segoe UI';
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0px;
+    background-image: url("https://i.ibb.co/dPjqb54/background.png");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: repeat;
+    height: 100%;
+    align-content: center;
+    align-items: center;
+}
+.options {
+  width: 70%;
+  height: 100%;
+  margin-top: 14vh;
+  display: flex;
+  flex-direction: column;
+  gap: 4vh;
+  margin-bottom: 120px;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.box-livre, .box-faca-voce-mesmo {
+    width: 100%;
+    height: 36vh;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-left: 24px;
+    justify-content: end;
+    padding-bottom: 16px;
+    border-radius: 24px;
+    box-shadow: 4px 4px 4px rgba(88, 94, 100, 0.397);
+    text-decoration: none;
+    color: white;
+    background-size:cover;
+    background-repeat: no-repeat;
+    font-size: 3vw;
+    font-weight: 900;
+    font-style: italic 
+}
+
+.box-livre {
+  background-image:url("../images/frontend/publish-picture-1.png");
+}
+.box-faca-voce-mesmo {
+  background-image: url("../images/frontend/publish-picture-2.png");
+}
+.box-livre h2, .box-faca-voce-mesmo h2 {
+  z-index: 1;
+  width: 40%;
+  margin: 0;
+}
+@media (min-width: 1025px) {
+  .options {
+    flex-direction: row;
+    width: 80%;
+  }
+  .box-livre, .box-faca-voce-mesmo {
+    height: 70vh;
+    font-size: 2.5vw;
+  }
+  .box-livre h2, .box-faca-voce-mesmo h2 {
+    width: 60%;
+    text-wrap: wrap;
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publição</title>
+    <!-- Link para os arquivos CSS -->
+    <link rel="stylesheet" href="styles/telaPublicacao.css" />
+    <link rel="stylesheet" href="styles/index.css" />
+    <style>
+      /* Estilo inline para definir uma imagem de fundo */
+      body {
+        background-image: url(images/frontend/mainbackground.svg);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cabeçalho com o logo -->
+    <header>
+      <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" />
+    </header>
+
+    <div class="options">
+    <!-- Link para criar uma publicação livre -->
+    <a class="box-livre" id="free-publi" href="/criar-publicacao-livre">
+      <h2>COMPARTILHE NO FEED</h2>
+    </a>
+
+    <!-- Link para criar uma publicação "Faça você mesmo" -->
+    <a class="box-faca-voce-mesmo" id="do-yourself-publi" href="/criar-publicacao-faca-voce-mesmo">
+      <h2>COMPARTILHE UMA AÇÃO</h2>
+    </a>
+  </div>
+
+    <!-- Rodapé com links de navegação -->
+    <footer>
+      <a href="/feed"><img src="images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+  </body>
+  <script>
+    if (!sessionStorage.getItem("userId")) {
+      window.location.href = `${window.location.origin}/login`;
+    }
+  </script>
+  <script>
+    // Script para ajustar o link do perfil com base no ID do usuário armazenado no sessionStorage
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+</html>
+

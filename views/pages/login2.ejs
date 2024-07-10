@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta id="meta" http-equiv="refresh" />
+  <title>Login</title>
+  <link rel="stylesheet" href="styles/cadastro-login.css" />
+  <style>
+    body {
+      background-image: url(images/frontend/fundo-escuro.svg);
+      background-attachment: fixed;
+      background-size: cover;
+      background-repeat: repeat;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+      margin: 0px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/logos/borbulha-logo.svg" />
+  </header>
+  <div class="box-login">
+    <h1>Faça seu login</h1>
+    <div class="forms">
+      <input type="text" placeholder="Email" id="email" />
+      <span id="email-error" style="color: orange; font-weight: bold;"></span>
+      <input type="password" placeholder="Senha" id="password" />
+      <span id="password-error" style="color: orange; font-weight: bold;"></span>
+    </div>
+    <div class="lower-btn">
+      <button class="btn-orange" id="enter">ENTRAR</button>
+      <button class="btn"><a href="/cadastro">Criar conta</a></button>
+    </div>
+  </div>
+
+  <script>
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const enterButton = document.getElementById("enter");
+    const emailError = document.getElementById("email-error");
+    const passwordError = document.getElementById("password-error");
+
+    let emailValue;
+    let passwordValue;
+    let loginAttempts = 0;
+
+    emailInput.addEventListener("input", () => {
+      emailValue = emailInput.value;
+      emailError.textContent = "";
+    });
+
+    passwordInput.addEventListener("input", () => {
+      passwordValue = passwordInput.value;
+      passwordError.textContent = "";
+    });
+
+    enterButton.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!email & !password ) {
+        emailError.textContent = "Parece que você não informou o seu e-mail.";
+        
+        passwordError.textContent = "Ei! não esqueça sua senha.";
+        return;
+      }
+
+      else if (!email) {
+        emailError.textContent = "Parece que você não informou o seu e-mail.";
+        return;
+        
+      }
+
+
+        
+      
+
+      else if (!password) {
+        passwordError.textContent = "Ei! não esqueça sua senha.";
+        return;
+      }
+
+      fetch("/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Erro ao obter dados do usuário");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        let emailFound = false;
+
+        for (const register of data) {
+          if (register.email === email) {
+            emailFound = true;
+
+            if (register.password === password) {
+              const userId = register.id;
+              sessionStorage.setItem("userId", userId);
+              window.location.href = `/ver-perfil/${userId}`;
+              return;
+            } else {
+              passwordError.textContent = "Senha incorreta, tente novamente...";
+              loginAttempts++;
+              if (loginAttempts >= 3) {
+                passwordError.textContent = "Lembre-se que a senha deve ter  Ao menos: 6 caracteres, uma letra maiúscula, uma minúscula, um número e um caractere especial!";
+              }
+              return;
+            }
+          }
+        }
+
+        if (!emailFound) {
+          emailError.textContent = "Poxa! Esse email aida não foi cadastrado, corrija o e-mail ou clique em 'Criar conta'.";
+        }
+      })
+      .catch((err) => {
+        alert("Erro ao processar login: " + err.message);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feed de Publicações - Borbulha</title>
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/feed.css" />
+    <style>
+      body {
+        background-image: url(images/frontend/mainbackground.svg);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Início do cabeçalho -->
+    <header>
+      <!-- Logotipo da Borbulha -->
+      <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" />
+    </header>
+    <!-- Fim do cabeçalho -->
+
+    <!-- Container do feed -->
+    <div class="feed" id="feed"></div>
+
+    <!-- Início do rodapé -->
+    <footer>
+      <!-- Ícones do rodapé para navegação -->
+      <a href="/feed"><img src="images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+    <!-- Fim do rodapé -->
+  </body>
+  <script>
+    if (!sessionStorage.getItem("userId")) {
+      window.location.href = `${window.location.origin}/login`;
+    }
+  </script>
+  <script>
+    // Adiciona o ID do usuário ao link do perfil no rodapé
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+
+  <script>
+    const feed = document.getElementById("feed");
+
+    // Fetch para obter os dados do feed
+    fetch("/feed-and-community/1/type-post", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // Itera sobre os registros retornados
+        for (const register of data) {
+          // Extrai informações do registro
+          if (!register.id_user) {
+            continue;
+          }
+          console.log(register.id_user.id);
+          const postContent = register.post_content;
+          const likes = register.likes;
+          const projectTitle = register.project_title;
+          const idUser = register.id_user.id;
+          const name = register.id_user.name;
+          const typePost = register.id_type_post.type_post;
+          const idTypePost = register.id_type_post.id;
+          const idPost = register.id;
+          const postImageUrl = register.post_image_url;
+          const profilePicture = register.id_user.profile_picture_url;
+
+          if (data.indexOf(register) === 0) {
+            // Verifica se é o primeiro registro para definir o HTML do feed
+            feed.innerHTML = `
+                <div class="box-post">
+                    <!-- CABEÇALHO DO PERFIL USUÁRIO -->
+                    <div class="post-header">
+                        <a href="/ver-perfil/${idUser}">
+                            <img src=${profilePicture} />
+                            <p>${name}</p>
+                        </a>
+                    </div>
+                    <!-- CABEÇALHO DO PERFIL USUÁRIO -->
+
+                    <div class="post-content">
+                        <p>${postContent}</p>
+                        <img src=${postImageUrl} />
+                    </div>
+
+                    <div class="post-footer">
+                        <div class="actions">
+                            <div class="like">
+                                <button id="like-btn">
+                                    <img src="images/frontend/icons/borbulhar.svg" id="like-container-${idPost}" />
+                                </button>
+                                <p>Borbulhar</p>
+                            </div>
+                            <div class="share">
+                                <button>
+                                    <img src="images/frontend/icons/compartilhar.svg" />
+                                </button>
+                                <p>Compartilhar</p>
+                            </div>
+                            <div class="liked">
+                                <p>${likes} Bolhas</p>
+                                <img src="images/frontend/icons/bolhaLaranja.svg" />
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+          } else {
+            feed.innerHTML += `
+                <div class="box-post">
+                    <!-- CABEÇALHO DO PERFIL USUÁRIO -->
+                    <div class="post-header">
+                        <a href="/ver-perfil/${idUser}">
+                            <img src=${profilePicture} />
+                            <p>${name}</p>
+                        </a>
+                    </div>
+                    <!-- CABEÇALHO DO PERFIL USUÁRIO -->
+
+                    <div class="post-content">
+                        <p>${postContent}</p>
+                        <img src=${postImageUrl} />
+                    </div>
+
+                    <div class="post-footer">
+                        <div class="actions">
+                            <div class="like">
+                                <button id="like-btn">
+                                    <img src="images/frontend/icons/borbulhar.svg" id="like-container-${idPost}" />
+                                </button>
+                                <p>Borbulhar</p>
+                            </div>
+                            <div class="share">
+                                <button>
+                                    <img src="images/frontend/icons/compartilhar.svg" />
+                                </button>
+                                <p>Compartilhar</p>
+                            </div>
+                            <div class="liked">
+                                <p>${likes} Bolhas</p>
+                                <img src="images/frontend/icons/bolhaLaranja.svg" />
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+          }
+          setTimeout(() => {
+            document
+              .getElementById(`like-container-${idPost}`)
+              .addEventListener("click", () => {
+                // Adiciona o evento de clique ao botão de "like" após um delay
+                fetch("/liked-content", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    postId: idPost,
+                    userId: sessionStorage.getItem("userId"),
+                    liked: true,
+                  }),
+                })
+                  .then((res) => {
+                    console.log(res.status);
+                    return res.status;
+                  })
+                  .then((data) => {
+                    if (data === 200) {
+                      alert("Ação realizada com sucesso");
+                      fetch(`/feed-and-community-likes/${idPost}`, {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          likes: likes + 1,
+                        }),
+                      })
+                        .then((res) => {
+                          return res.status;
+                        })
+                        .then((data) => {
+                          if (data === 200) {
+                            alert("Ação realizada com sucesso");
+                            window.location.href = window.location.pathname;
+                          }
+                        });
+                    }
+                  });
+              });
+            console.log(document.querySelector(".share"));
+            document.querySelector(".share").addEventListener("click", () => {
+              navigator.clipboard.writeText(window.location.href);
+            });
+          }, 1500);
+        }
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
+  </script>
+</html>

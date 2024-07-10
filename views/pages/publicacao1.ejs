@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Postagem 1</title>
+    <!-- Link para os arquivos CSS -->
+    <link rel="stylesheet" href="styles/publicacao1.css" />
+    <link rel="stylesheet" href="styles/index.css" />
+    <style>
+      /* Estilo inline para definir uma imagem de fundo */
+      body {
+        background-image: url(images/frontend/mainbackground.svg);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Cabeçalho com o logo -->
+    <header>
+      <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" />
+    </header>
+
+    <!-- Seção de publicação -->
+    <div class="box-publish">
+      <div class="subTitulo">Compartilhe algo em seu Feed!</div>
+
+      <!-- Formulário para adicionar texto à publicação -->
+      <form action="" target="" method="">
+        <textarea
+          name="Título"
+          id="content-text"
+          placeholder="Adicione um texto..."
+        ></textarea>
+      </form>
+      <!-- Botão para fazer upload de imagem -->
+      <button id="upload_widget" class="picture"></button>
+      <div>
+        <!-- Botão para publicar -->
+        <button class="button-publish" id="publish">Publicar</button>
+      </div>
+    </div>
+
+    <!-- Rodapé com links de navegação -->
+    <footer>
+      <a href="/feed"><img src="images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+  </body>
+
+  <!-- Script para ajustar o link do perfil com base no ID do usuário armazenado no sessionStorage -->
+  <script>
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+  <script>
+    if (!sessionStorage.getItem("userId")) {
+      window.location.href = `${window.location.origin}/login`;
+    }
+  </script>
+  <!-- Script para incluir o widget de upload do Cloudinary -->
+  <script
+    src="https://widget.cloudinary.com/v2.0/global/all.js"
+    type="text/javascript"
+  ></script>
+  <script type="text/javascript">
+    // Seleciona os elementos de botão de upload e textarea
+    const button = document.getElementById("upload_widget");
+    const postInput = document.getElementById("content-text");
+    const publish = document.getElementById("publish");
+
+    let postValue;
+    let imgUrl;
+    // Adiciona evento para capturar o valor do texto conforme o usuário digita
+    postInput.addEventListener("input", () => {
+      postValue = postInput.value;
+    });
+
+    // Configura o widget de upload do Cloudinary
+    let widget = cloudinary.applyUploadWidget(
+      document.getElementById("upload_widget"),
+      {
+        cloudName: "dxcd0vozq", // Substitua com o nome do seu cloud
+        uploadPreset: "rnz7powg", // Substitua com o seu upload preset
+      },
+      (error, result) => {
+        if (!error && result && result.event === "success") {
+          setTimeout(() => {
+            imgUrl = result.info.secure_url;
+            // Ajusta o botão de upload após o upload da imagem
+            const btn = document.getElementById("upload_widget");
+            const href = document.querySelector("a");
+            const ul = document.querySelector("ul");
+            btn.innerHTML = `<img src="${imgUrl}" />`;
+            btn.style.display = "flex";
+            href.style.display = "none";
+            ul.style.display = "none";
+          }, "1000");
+        }
+        // Envia os dados da publicação para o servidor
+      }
+    );
+
+    publish.addEventListener("click", () => {
+      fetch("/feed-and-community", {
+        method: "POST",
+        body: JSON.stringify({
+          post_content: postValue,
+          post_image_url: imgUrl,
+          likes: 0,
+          project_title: "",
+          project_description: "",
+          project_cost: 0,
+          project_duration: "",
+          project_volunteers_quantity: 0,
+          id_user: sessionStorage.getItem("userId"),
+          id_type_post: 1,
+        }),
+      })
+        .then((res) => {
+          return res.status;
+        })
+        .then((data) => {
+          if (data === 200) {
+            alert("Ação realizada com sucesso");
+          }
+        });
+    });
+  </script>
+</html>

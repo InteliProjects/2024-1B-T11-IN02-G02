@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feed de Publicações - Borbulha</title>
+    <!-- Link para os arquivos CSS -->
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/facaVoceMesmo.css" />
+    <style>
+      body {
+        background-image: url(images/frontend/mainbackground.svg);
+        background-attachment: fixed;
+        background-size: cover;
+        background-repeat: repeat;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cabeçalho -->
+    <header>
+      <img id="borbulha-logo" src="images/logos/borbulha-logo.svg" />
+    </header>
+
+    <!-- Formulário de publicação -->
+    <div class="box-publish">
+      <h2>Faça você mesmo!</h2>
+
+      <!-- <form action="" target="" method=""> -->
+        <!-- Campo para o título -->
+        <textarea
+          class="text1"
+          id="title"
+          name="Título"
+          placeholder="Título:"
+        ></textarea>
+
+        <!-- Botão para upload de imagem -->
+        <button id="upload_widget" class="picture"></button>
+
+        <!-- Campo para a descrição do post -->
+        <textarea
+          class="text2"
+          id="post_content"
+          name="Descreva como fazer:"
+          placeholder="Descreva como fazer:"
+        ></textarea>
+        
+        <!-- Campo para a duração -->
+        <div class="duration">
+          <label for="duration">Duração:</label>
+          <input type="string" id="duration" name="duration" />
+        </div>
+
+        <!-- Campo para o custo -->
+        <div class="number">
+          <label for="cost">Custo:</label>
+          <input type="number" id="cost" name="cost" />
+        </div>
+
+        <!-- Campo para a quantidade de voluntários -->
+        <div class="number">
+          <label for="quantity_volunteers">Quantidade de pessoas:</label>
+          <input
+            type="number"
+            id="quantity_volunteers"
+            name="quantity_volunteers"
+          />
+        </div>
+
+        <!-- Seleção da ação abordada -->
+        <div class="selection">
+          <label for="type_action">Ação abordada:</label>
+          <select id="type_action" name="type_action">
+            <option value=""></option>
+            <option value="Meio Ambiente">Meio Ambiente</option>
+            <option value="Educação">Educação</option>
+            <option value="Tecnologia">Tecnologia</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Esporte">Esporte</option>
+            <option value="Assistência Social">Assistência Social</option>
+            <option value="Cultura e Arte">Cultura e Arte</option>
+          </select>
+        </div>
+
+        <!-- Seleção do público-alvo -->
+        <div class="selection">
+          <label for="target_public">Público-alvo:</label>
+          <select id="target_public" name="target_public">
+            <option value=""></option>
+            <option value="Idosos">Idosos</option>
+            <option value="Crianças">Crianças</option>
+            <option value="Animais">Animais</option>
+            <option value="Imigrantes">Imigrantes</option>
+            <option value="Socialmente Vulneráveis">Socialmente Vulneráveis</option>
+            <option value="LGBTQ+">LGBTQ+</option>
+            <option value="PCD">PCD</option>
+            <option value="Estudantes">Estudantes</option>
+          </select>
+        </div>
+
+        <!-- Botão para publicar -->
+        <button type="button" class="publish_btn" id="publish">Publicar</button>
+      </form>
+    </div>
+
+    <!-- Rodapé -->
+    <footer>
+      <a href="/feed"><img src="images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+  </body>
+  <!-- Script para definir o link do perfil do usuário -->
+  <script>
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+    <script
+    src="https://widget.cloudinary.com/v2.0/global/all.js"
+    type="text/javascript"
+  ></script>
+  <!-- Script para manipulação do upload de imagem -->
+    <script>
+      if (!sessionStorage.getItem("userId")) {
+        window.location.href = `${window.location.origin}/login`;
+      }
+
+    // Captura dos valores dos campos do formulário
+    const title = document.getElementById("title");
+    const post_content = document.getElementById("post_content");
+    const duration = document.getElementById("duration");
+    const cost = document.getElementById("cost");
+    const quantity_volunteers = document.getElementById("quantity_volunteers");
+    const type_action = document.getElementById("type_action");
+    const target_public = document.getElementById("target_public");
+    const publish_button = document.getElementById("publish");
+    const userId = sessionStorage.getItem("userId");
+
+    let titleValue;
+    let post_contentValue;
+    let durationValue;
+    let costValue;
+    let quantity_volunteersValue;
+    let type_actionValue;
+    let target_publicValue;
+    let imageUrl;
+
+    // Adicionando event listeners para capturar as mudanças nos campos do formulário
+    title.addEventListener("input", () => {
+      titleValue = title.value;
+    });
+
+    post_content.addEventListener("input", () => {
+      post_contentValue = post_content.value;
+    });
+
+    duration.addEventListener("input", () => {
+      durationValue = duration.value;
+    });
+
+    cost.addEventListener("input", () => {
+      costValue = cost.value;
+    });
+
+    quantity_volunteers.addEventListener("input", () => {
+      quantity_volunteersValue = quantity_volunteers.value;
+    });
+
+    type_action.addEventListener("change", () => {
+      type_actionValue = type_action.value;
+    });
+
+    target_public.addEventListener("change", () => {
+      target_publicValue = target_public.value;
+    });
+
+    let widget = cloudinary.applyUploadWidget(
+      document.getElementById("upload_widget"),
+      {
+        cloudName: "dxcd0vozq", // Substitua com o nome do seu cloud
+        uploadPreset: "rnz7powg", // Substitua com o seu upload preset
+      },
+      (error, result) => {
+        if (!error && result && result.event === "success") {
+          setTimeout(() => {
+            imageUrl = result.info.secure_url;
+            // Ajusta o botão de upload após o upload da imagem
+            const btn = document.getElementById("upload_widget");
+            const href = document.querySelector("a");
+            const ul = document.querySelector("ul");
+            btn.innerHTML = `<img src="${result.info.secure_url}" />`;
+            btn.style.display = "flex";
+            href.style.display = "none";
+            ul.style.display = "none";
+          }, "1000");
+        }
+        // Envia os dados da publicação para o servidor
+      }
+    );
+    // Adicionando event listener ao botão de publicação
+    publish_button.addEventListener("click", () => {
+      const body = {
+        post_image_url: imageUrl,
+        project_title: titleValue,
+        project_description: post_contentValue,
+        project_cost: costValue,
+        project_duration: durationValue,
+        project_volunteers_quantity: quantity_volunteersValue,
+        id_user: Number(userId),
+        id_type_post: 2,
+      };
+      console.log(body)
+
+      // Enviando os dados do formulário para o servidor via POST
+      let targetPublics;
+      let actions;
+    fetch("/target-public", {
+      method: 'GET'
+    }).then((res) => {
+      return res.json()
+    }).then((data) => {
+      targetPublics = data
+      console.log('aqui')
+      fetch("/actions", {
+        method: 'GET'
+      }).then((res) => {
+        return res.json()
+      }).then((data) => {
+        actions = data
+        console.log('aqui')
+        const action = actions.find((action) => action.actions === type_actionValue)
+        const targetPublic = targetPublics.find((targetPublic) => targetPublic.target_public === target_publicValue)
+        fetch("/feed-and-community", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      })
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            fetch('/feed-and-community-actions', {
+              method: 'POST',
+              body: JSON.stringify({
+                feedId: data.id,
+                actionId: action.id
+              })
+            })
+            fetch('/feed-and-community-target-public', {
+              method: 'POST',
+              body: JSON.stringify({
+                feedId: data.id,
+                targetPublicId: targetPublic.id
+              })
+            }).then((res) => {
+              return res.status
+            }).then((data) => {
+              if(data === 200){
+                alert('Ação realizada com sucesso')
+              }
+            })
+          
+          })
+          .catch((err) => {
+            console.log("Erro ao publicar:", err);
+          });
+    })  
+  })
+});
+  </script>
+  
+</html>
+

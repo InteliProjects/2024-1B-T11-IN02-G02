@@ -1,0 +1,90 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+
+/* Adicionar no head */
+/* <link rel="stylesheet" href="styles/index.css" /> */
+
+header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color:#eeeeee;
+  position: fixed ;
+  z-index: 2;
+  margin: 0%;   
+}
+  
+footer {
+  background-color: #F5F4F6;
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding-top: 8px;
+  padding-right: 4rem;
+  padding-left: 4.20rem;
+  gap: 2.875rem; 
+  justify-content: center;
+}
+
+.popup-sucess {
+  width: 75%;
+  height: 110px;
+  background-color: white;
+  border-radius: 16px;
+  border-color: black;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  box-shadow: 4px 4px 4px rgba(88, 94, 100, 0.397);
+}
+
+.sucess {
+  font-family: 'Segoe UI';
+  font-size: 20px;
+  font-weight: bolder;
+  color: #002a65
+
+}
+
+@media (min-width: 1025px) {
+  footer {
+    padding: 12px 0px;
+    gap: 100px
+  }
+  footer a img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+  footer {
+    padding: 12px 0px;
+    gap: 100px
+  }
+  footer a img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .box-login{width: 80%;}
+}
+
+
+
+
+
+

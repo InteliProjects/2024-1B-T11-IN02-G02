@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/cadastro-login.css" />
+  <style>
+    body {
+      background-image: url(images/frontend/fundo-escuro.svg);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <!-- Cabeçalho com o logo -->
+  <header>
+    <img src="images/logos/borbulha-logo.svg" />
+  </header>
+
+  <!-- Caixa de login/cadastro -->
+  <div class="box-login">
+    <h1>Crie sua conta</h1>
+
+    <!-- Campos de formulário -->
+    <div class="forms">
+
+      <!-- nome -->
+      <input type="text" id="account-name" placeholder="Nome da conta" />
+      <span id="name-error" style="color: orange; font-weight: bold;"></span>
+      <!-- nome -->
+
+      <!-- e-mail -->
+      <input type="text" id="account-email" placeholder="Email" />
+      <span id="email-error" style="color: orange; font-weight: bold;"></span>
+      <!-- e-mail -->
+
+      <!-- senha -->
+      <div class="senhaEye">
+        <input type="password" id="account-senha" placeholder="Senha" />
+        <img id="toggle-password" class="toggle-password" src="images/frontend/icons/olho_fechado.svg"
+          alt="Mostrar senha" onclick="togglePasswordVisibility()">
+      </div>
+      <span id="password-error" style="color: orange; font-weight: bold;"></span>
+      <!-- senha -->
+
+    </div>
+
+    <!-- Seleção de tipo de usuário -->
+    <div class="login-function">
+      <h2>Sou:</h2>
+      <button id="volunteers" value="false">Voluntário</button>
+      <button id="ong" value="false">ONG</button>
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="lower-btn">
+      <button id="create-account" class="btn-orange">CRIAR CONTA</button>
+      <span id="createAccount-error" style="color: orange; font-weight: bold;"></span>
+      <button id="enter" class="btn">
+        <a href='/login'>Ir para Login</a>
+      </button>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script>
+      // VALIDAR NOME   
+
+      const email = document.getElementById("account-email");
+      const name = document.getElementById("account-name");
+      const senha = document.getElementById("account-senha");
+      const enter = document.getElementById("enter");
+      const create = document.getElementById("create-account");
+      const volunteers = document.getElementById("volunteers");
+      const ong = document.getElementById("ong");
+      const meta = document.getElementById("meta");
+
+      // Variáveis para armazenar os valores dos inputs
+      let emailValue;
+      let nameValue;
+      let senhaValue;
+      let enterValue;
+      let createValue;
+      let volunteersValue;
+      let ongValue;
+
+      name.addEventListener("input", () => {
+        nameValue = name.value.trim(); // Atualiza nameValue com o valor do campo
+        validateName();
+      });
+
+      email.addEventListener("input", () => {
+        emailValue = email.value.trim(); // Atualiza emailValue com o valor do campo
+        validateEmail();
+      });
+
+      senha.addEventListener("input", () => {
+        senhaValue = senha.value.trim(); // Atualiza senhaValue com o valor do campo
+        validatePassword();
+      });
+
+
+      function validateName() {
+        var nameInput = document.getElementById("account-name");
+        var name = nameInput.value; // Obtém o valor do campo sem remover espaços
+        var nameError = document.getElementById("name-error");
+
+        // Capitaliza a primeira letra de cada palavra do nome
+        var exceptions = ["de", "da", "do", "das", "dos"];
+        var formattedName = name.split(/\s+/).map(function (word, index) {
+          // Convert first word to uppercase regardless
+          if (index === 0) {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          } else {
+            // Check if the word is in exceptions array
+            if (exceptions.includes(word.toLowerCase())) {
+              return word.toLowerCase(); // Keep the exception word lowercase
+            } else {
+              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }
+          }
+        }).join(' ');
+
+        // Verifica se o nome está vazio
+        if (!name.trim()) {
+          nameError.textContent = "Campo nome não pode estar vazio.";
+          return false;
+        }
+
+        // Expressão regular para verificar se contém números ou caracteres especiais
+        var regex = /^[a-zA-Z\s]*$/;
+        if (!regex.test(name)) {
+          nameError.textContent = " O nome não pode incluir números ou caracteres especiais";
+          return false;
+        }
+
+        // Verifica se o nome possui pelo menos duas palavras (nome e sobrenome)
+        if (!isValidFullName(formattedName)) {
+          nameError.textContent = "Insira seu nome completo (nome e sobrenome)";
+          return false;
+        }
+
+        // Verifica o comprimento máximo do nome
+        if (formattedName.length > 50) {
+          nameError.textContent = "O nome pode ter no máximo 50 caracteres.";
+          return false;
+        }
+
+        // Atualiza o valor no campo de entrada com o nome formatado
+        nameInput.value = formattedName;
+        nameValue = formattedName; // Atualiza a variável global
+
+
+
+        // Se todas as validações passaram, limpa o erro e retorna true
+        nameError.textContent = "";
+        return true;
+      }
+
+      function isValidFullName(name) {
+        // Verifica se o nome tem pelo menos um espaço para separar nome e sobrenome
+        if (!name) {
+          return ''
+        }
+        return name.split(' ').length > 1;
+      }
+      // VALIDAR NOME
+
+      // VALIDAR E-MAIL
+      function validateEmail() {
+        var email = document.getElementById("account-email").value.trim();
+        var emailError = document.getElementById("email-error");
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (email === "") {
+          emailError.textContent = "Campo de e-mail não pode estar vazio.";
+          return false;
+        } else if (/\s/.test(email)) {
+          emailError.textContent = "O e-mail não pode conter espaços em branco.";
+          return false;
+        } else if (!emailRegex.test(email)) {
+          if (!email.includes("@")) {
+            emailError.textContent = "O e-mail deve conter pelo menos um '@'.";
+          } else if (email.indexOf("@") === 0) {
+            emailError.textContent = "O e-mail deve conter texto antes do '@'.";
+          } else if (email.indexOf("@") === email.length - 1) {
+            emailError.textContent = "O e-mail deve conter um subdomínio válido após o '@'.";
+          } else if (email.indexOf(".") === -1) {
+            emailError.textContent = "O e-mail deve conter pelo menos um ponto '.' após o subdomínio";
+          } else if (email.lastIndexOf(".") < email.indexOf("@")) {
+            emailError.textContent = " O e-mail deve conter um domínio válido após o ponto '.' .";
+          } else if (email.lastIndexOf(".") === email.length - 1) {
+            emailError.textContent = "Por favor, insira um e-mail válido.";
+          }
+          return false;
+        } else {
+          emailError.textContent = "";
+          return true;
+        }
+      }
+      // VALIDAR E-MAIL
+
+      // VALIDAR SENHA
+      function validatePassword() {
+        var senha = document.getElementById("account-senha").value;
+        var passwordError = document.getElementById("password-error");
+
+        if (!senha.trim()) {
+          passwordError.textContent = "Campo senha não pode estar vazia";
+          return false;
+
+        } else if (/\s/.test(senha)) { // Verifica se há espaços
+          passwordError.textContent = "A senha não pode conter espaços.";
+          return false;
+        } else if (!/[a-z]/.test(senha)) {
+          passwordError.textContent = "A senha deve ter ao menos uma letra minúscula";
+          return false;
+        } else if (!/[A-Z]/.test(senha)) {
+          passwordError.textContent = "A senha deve ter ao menos uma letra maiúscula";
+          return false;
+        } else if (!/[0-9]/.test(senha)) {
+          passwordError.textContent = "A senha deve ter ao menos um numeral";
+          return false;
+        } else if (!/[^a-zA-Z0-9]/.test(senha)) { // Verifica se há pelo menos um caractere especial
+          passwordError.textContent = "A senha deve ter ao menos um caractere especial.";
+          return false;
+        }
+        else if (senha.length < 6) {
+          passwordError.textContent = "A senha deve ter pelo menos 6 caracteres.";
+          return false;
+        } else if (senha.length > 12) {
+          passwordError.textContent = "A senha pode ter no máximo 12 caracteres.";
+          return false;
+        } else {
+          passwordError.textContent = "";
+          return true;
+        }
+      }
+      // VALIDAR SENHA
+
+      // ESCONDER SENHA
+      function togglePasswordVisibility() {
+        var senhaInput = document.getElementById("account-senha");
+        var toggleIcon = document.getElementById("toggle-password");
+
+        if (senhaInput.type === "password") {
+          senhaInput.type = "text";
+          toggleIcon.src = "images/frontend/icons/olho_aberto.svg";
+        } else {
+          senhaInput.type = "password";
+          toggleIcon.src = "images/frontend/icons/olho_fechado.svg";
+        }
+      }
+      // ESCONDER SENHA
+
+      // Eventos para definir o tipo de usuário
+      volunteers.addEventListener("click", () => {
+        volunteers.value === "false"
+          ? (volunteers.value = "true")
+          : (ongValue = "false");
+        volunteersValue = volunteers.value;
+        console.log(volunteers.value);
+      });
+
+      ong.addEventListener("click", () => {
+        ong.value === "false"
+          ? (ong.value = "true")
+          : (volunteersValue = "false");
+        ongValue = ong.value;
+        console.log(volunteersValue);
+      });
+
+      // Evento para criar conta
+
+
+
+      create.addEventListener("click", () => {
+        let typeUser;
+        ongValue === "true" ? (typeUser = 1) : (typeUser = 2);
+        let isNameValid = validateName()
+        let isEmailValid = validateEmail()
+        let isPasswordValid = validatePassword()
+        let validateFullName = isValidFullName(nameValue)
+        if (!isNameValid | !isEmailValid | !isPasswordValid | !validateFullName | !volunteersValue) {
+          alert("Por favor, preencha corretamente todos os campos e selecione o tipo de usuário.");
+        }
+        const body = {
+          name: nameValue,
+          email: emailValue,
+          password: senhaValue,
+          city: "",
+          state: "",
+          birthdate: "",
+          profile_picture_url: "",
+          profile_description: "",
+          type_users: typeUser,
+        };
+        
+          
+
+        fetch("/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      })
+        .then((res) => {
+          const json = res.json();
+          console.log(res.status);
+          window.location.href = `${window.location.origin}/login`;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+    enter.addEventListener("click", () => {
+      let typeUser;
+      ongValue === "true" ? (typeUser = 1) : (typeUser = 2);
+      fetch("/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          for (const register of data) {
+            if (
+              register.password === senhaValue &&
+              register.email === emailValue
+            ) {
+              const userId = register.id;
+              console.log(userId);
+              sessionStorage.setItem("userId", userId);
+              // meta.innerHTML = `<meta http-equiv="refresh"content="15; url =/ver-perfil/${userId}/>`;
+              meta.content = `1; url =/ver-perfil/${userId}`;
+              console.log(meta);
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+    </script>
+</body>
+
+</html>

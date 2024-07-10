@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage Mobile</title>
+  <link rel="stylesheet" href="styles/homepage.css">
+  <link rel="stylesheet" href="styles/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="hamburger" onclick="toggleMenu()">
+      &#9776;
+    </div>
+    <nav id="menu" class="menu">
+      <a href="#call-to-action">Início</a>
+      <a href="#com-proposito">Nosso Propósito</a>
+      <a href="#dados-de-impacto">Nosso Impacto</a>
+      <a href="#historias-que-motivam">Histórias</a>
+    </nav>
+  </header>
+  <!-- Seção de Call to Action -->
+  <section id="call-to-action">
+    <h1>Junte-se a nós!</h1>
+    <p><strong>Borbulhando</strong> uma comunidade de voluntários que <span>inspiram</span></p>
+    <a href="/cadastro"><button>Comece agora</button></a>
+  </section>
+
+  <!-- Seção "Nosso Propósito" -->
+  <section id="com-proposito">
+    <div class="proposito-texto">
+      <h2>Nossa missão</h2>
+      <div class="vertical-text">
+        <div><span>V</span>oluntariado</div>
+        <div><span>T</span>ransformador</div>
+        <div><span>M</span>assivo</div>
+      </div>
+      <p> Uma nova forma de <strong>enxergar</strong>, <strong>fomentar</strong> e <strong>borbulhar</strong> a cultivar a comunidade de voluntários.</p>
+    </div>
+    <div class="carousel">
+      <div class="carousel-item1">
+        <h3>Comunidade</h3>
+        <p>Uma nova forma de enxergar, fomentar e borbulhar a cultivar a comunidade de voluntários.</p>
+      </div>
+      <div class="carousel-item2">
+        <h3>Impacto</h3>
+        <p>Transformamos vidas e comunidades através do voluntariado.</p>
+      </div>
+      <div class="carousel-item3">
+        <h3>Inspiração</h3>
+        <p>Cada voluntário inspira outros a se juntarem e fazerem a diferença.</p>
+      </div>
+    </div>
+  </section>  
+
+  <!-- Seção de Dados de Impacto -->
+  <section id="dados-de-impacto">
+    <h2>Nosso Impacto</h2>
+    <div class="impacto">
+      <div>
+        <h3 id='1000+'>1000+</h3>
+        <p>Voluntários</p>
+      </div>
+      <div>
+        <h3 id='500+'>500+</h3>
+        <p>Projetos</p>
+      </div>
+      <div>
+        <h3 id='50+'>50+</h3>
+        <p>Países</p>
+      </div>
+    </div>
+  </section>
+  <!-- Seção de Histórias que Motivam -->
+  <section id="historias-que-motivam">
+    <h2>Prestigiamos</h2>
+    <div class="vertical-text"> Quem <span>borbulha</span> com a gente 
+    </div>
+    <p> E te queremos <strong>conosco</strong> nessa jornada de <strong>empatia</strong>, <strong>conexão</strong> e <strong>propósito</strong>.</p>
+    <div class="historia1">
+      <p>"Participar desta comunidade mudou minha vida. Conheci pessoas incríveis e pude ajudar muitas causas importantes." - Maria</p>
+    </div>
+    <div class="historia2">
+      <p>"Ser voluntário me deu um novo propósito. A cada dia sinto que estou fazendo a diferença." - João</p>
+    </div>
+  </section>
+  <script>
+    $(document).ready(function(){
+      $('.carousel').slick({
+        dots: true,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 1,
+        adaptiveHeight: true,
+        centerMode: true, 
+        variableWidth: true
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      function animateValue(id, start, end, duration) {
+        let range = end - start;
+        let current = start;
+        let increment = end > start ? 1 : -1;
+        let stepTime = Math.abs(Math.floor(duration / range));
+        let obj = document.getElementById(id);
+
+        let timer = setInterval(function() {
+          current += increment;
+          obj.textContent = current + '+';
+          if (current == end) {
+            clearInterval(timer);
+            obj.textContent = end + '+';
+          }
+        }, stepTime);
+      }
+
+      let observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5 
+      };
+
+      function handleIntersection(entries, observer) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateValue("1000+", 0, 1000, 2000);
+            animateValue("500+", 0, 500, 2000);
+            animateValue("50+", 0, 50, 2000);
+          }
+        });
+      }
+
+      let observer = new IntersectionObserver(handleIntersection, observerOptions);
+      observer.observe(document.querySelector("#dados-de-impacto"));
+    });
+
+    function toggleMenu() {
+      var menu = document.getElementById("menu");
+      menu.classList.toggle("show");
+    }
+  </script>  
+</body>
+</html>
+
+

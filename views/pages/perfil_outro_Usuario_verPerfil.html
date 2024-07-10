@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borbulha</title>
+
+    <!-- estilo do arquivo -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden; /* Impede a rolagem horizontal */
+        }
+        header, .footer {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            background-color: #f0f0f0;
+            text-align: center;
+            z-index: 1000;
+        }
+        header {
+            top: 0;
+            padding: 20px 0;
+        }
+        .content {
+            padding-top: 150px; /* Ajustado para dar espaço ao header */
+            padding-bottom: 70px; /* Ajustado para dar espaço ao footer */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer {
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+            background-color: #f0f0f0;
+            padding: 10px 0;
+        }
+        .circular {
+            width: 113px;
+            height: 113px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- INICIO CABEÇALHO "BORBULHA"-->
+    <header>
+        <h1>Borbulha</h1>
+    </header>
+    <!-- FIM CABEÇALHO "BORBULHA" -->
+
+
+    <!-- INICIO RODAPÉ -->
+    <div class="footer">
+        <button style="margin: 5px;">🫧</button> 
+        <button style="margin: 5px;">➕</button>
+        <button style="margin: 5px;">🔍</button>
+        <button style="margin: 5px;">👤</button>
+    </div>
+    <!-- FIM RODAPÉ -->
+
+
+  
+
+    <div class="content">
+        <div style="width: 100px; height: 100px; border-radius: 50%; overflow: hidden;">
+            <img id="profilePic" src="/views/assets/imagem_perfil_do_usuario_teste.png" alt="Imagem 1" style="width: 100%; height: auto;">
+        </div>
+
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" style="display: none;">
+            <input type="file" id="fileInput" name="imagem" accept="image/*" onchange="startCropper(event)" required>
+        </form>
+
+        <div id="cropperContainer" style="display: none;">
+            <h3>Selecione a parte da imagem:</h3>
+            <div>
+                <img id="cropperImage" src="#" alt="Imagem para cortar">
+            </div>
+            <button onclick="cropImage()">Concluir</button>
+        </div>
+
+        
+
+        <h2>Nome do BD</h2>
+      
+        <div id="bioContainer" style="text-align: center; padding: 10px; width: 90%;">
+            <p id="bioText">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut, voluptate? <br> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Pariatur aliquid consequatur repellendus, eligendi minus odit cumque vero provident, voluptates, cum voluptatum minima ipsum totam eos id porro sequi ducimus ut!</p>
+            <textarea id="editedBioText" style="display: none; width: 90%; height: 200px;"></textarea>
+        </div>
+        
+        
+    
+        
+
+        <div style="margin: 20px 0;">
+            <button style="margin: 5px;">bolhinhas</button>
+            <button style="margin: 5px;">ver perfil</button>
+        </div>
+
+        <div>
+            <div>
+                <div><h>🏣Estado: <span id="estadoSelecionado">SP</span></h></div>
+                <div><h>🏠Cidade: <span id="cidadeSelecionada">Diadema</span></h></div>
+                <div id="seletores" style="display: none;">
+                  
+                </div>
+            </div>
+            
+            <div id="emailContainer">
+                <p>📧Email: <span id="email">rafaelasol2804@gmail.com</span> </p>
+                
+            </div>
+                   
+        
+            <div id="profile">
+                <div>📆 Idade: 18</div>
+                <div>📍 Hashtags: <span id="selected-hashtags">#crianças, #animais, #educação</span>
+                    
+                </div>
+            </div>
+        
+                      
+        </div>
+
+    </div>
+
+</body>
+</html>

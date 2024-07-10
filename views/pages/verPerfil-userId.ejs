@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borbulha</title>
+    <!-- Link para os arquivos CSS -->
+    <link rel="stylesheet" href="../styles/index.css" />
+    <link rel="stylesheet" href="../styles/verPerfil.css" />
+    <style>
+      /* Estilo inline para definir uma imagem de fundo */
+      body {
+        background-image: url("https://i.ibb.co/dPjqb54/background.png");
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Cabeçalho com o logo -->
+    <header>
+      <img id="borbulha-logo" src="../../images/logos/borbulha-logo.svg" />
+    </header>
+
+    <div class="box-perfil"></div>
+    <!-- Rodapé com links de navegação -->
+    <footer>
+      <a href="/feed"><img src="../../images/frontend/icons/feed.svg" /></a>
+      <a href="/escolha-sua-publicacao"
+        ><img src="../../images/frontend/icons/+.svg"
+      /></a>
+      <a href="/community"
+        ><img src="../../images/frontend/icons/comunidade.svg"
+      /></a>
+      <a href="/ver-perfil" id="see-profile"
+        ><img src="../../images/frontend/icons/perfil.svg"
+      /></a>
+    </footer>
+  </body>
+  <!-- Script para ajustar o link do perfil com base no ID do usuário armazenado no sessionStorage -->
+  <script>
+    const seeProfileButton = document.getElementById("see-profile");
+    seeProfileButton.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+  </script>
+  <!-- <script>
+    // Adiciona evento de clique para redirecionar para a página de bolhas
+    document.getElementById("bolhinhas").addEventListener("click", function () {
+      window.location.href = "/perfil-bolhas";
+    });
+
+    // Adiciona evento de clique para redirecionar para a página de perfil
+    document.getElementById("perfil").addEventListener("click", function () {
+      window.location.href = `/ver-perfil/${sessionStorage.getItem("userId")}`;
+    });
+
+    // Código comentado que também ajusta o link do perfil com base no ID do usuário
+  </script> -->
+  <script>
+    const box = document.querySelector(".box-perfil");
+    fetch(`${window.location.origin}/user/${window.location.pathname.slice(12)}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        let display;
+        window.location.pathname.slice(12) === sessionStorage.getItem("userId")
+          ? (display = "flex")
+          : (display = "none");
+        box.innerHTML = `
+      <!-- Ícone de edição de perfil -->
+      <div class="iconEdit">
+        <a href="/editar-perfil" style="display: ${display}">
+          <img src="../../images/frontend/icons/iconEdit.svg" />
+        </a>
+      </div>
+      <div class="content">
+      <div class="foto" id="editar">
+
+        <label class="picture">
+          <img src=${data.profile_picture_url}   />
+        </label>
+
+        <h2 class="Nome"> ${data.name} </h2>
+      
+        <p>
+          ${data.profile_description
+              ? `${data.profile_description}`
+              : "Sem descrição cadastrada"}
+        </p>
+
+      </div>
+
+      <!-- Informações do perfil -->
+      <div class="info-profile">
+        <div class="state">
+          <img src="../../images/frontend/icons/iconState.svg" />
+          <h4>Estado:</h4>
+          <p>${data.state ? `${data.state}` : "Sem estado cadastrado"}</p>
+        </div>
+        <div class="city">
+          <img src="../../images/frontend/icons/iconCity.svg" />
+          <h4>Cidade:</h4>
+          <p>${data.city ? `${data.city}` : "Sem cidade cadastrada"}</p>
+        </div>
+        <div class="email">
+          <img src="../../images/frontend/icons/iconGmail.svg" />
+          <h4>Email:</h4>
+          <p>${data.email}</p>
+        </div>
+        <div class="age">
+          <img src="../../images/frontend/icons/iconAge.svg" />
+          <h4>Idade:</h4>
+          <p>${
+            data.birthdate
+              ? `${calcAge(data.birthdate)} anos`
+              : "Sem idade cadastrada"
+          } </p>
+        </div>
+        <div class="action">
+          <img src="../../images/frontend/icons/iconAction.svg" />
+          <h4>Ações:</h4>
+          <p>#Doações #Caridade</p>
+        </div>
+        <div class="public">
+          <img src="../../images/frontend/icons/iconPublic.svg" />
+          <h4>Público-alvo:</h4>
+          <p>#Animais #Crianças</p>
+        </div>
+      </div>
+      </div>
+        `;
+      });
+    function calcAge(birthdate) {
+      const [day, month, year] = birthdate.split("/").map(Number);
+      const birth = new Date(year, month - 1, day);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthNow = today.getMonth();
+      const dayNow = today.getDate();
+      if (monthNow < month - 1 || (monthNow === month - 1 && dayNow < day)) {
+        age--;
+      }
+
+      return age;
+    }
+  </script>
+  <script>
+    if (!sessionStorage.getItem("userId")) {
+      window.location.href = `${window.location.origin}/login`;
+    }
+  </script>
+</html>
